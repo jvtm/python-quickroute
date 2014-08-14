@@ -41,17 +41,6 @@ def format_dotnet_time(ntime):
     return datetime(1, 1, 1) + timedelta(microseconds=ntime/10)
 
 
-class DateTimeEncoder(json.JSONEncoder):
-    """ Replacement JSON encoder supporting datetime and timedelta objects """
-    def default(self, obj):
-        if isinstance(obj, datetime):
-            return obj.isoformat()
-        elif isinstance(obj, timedelta):
-            return str(obj)
-        else:
-            return super(DateTimeEncoder, self).default(obj)
-
-
 def read_app_sections(stream):
     """
     Read APPn sections from JPEG file
@@ -377,15 +366,3 @@ class QuickRouteData(dict):
             logging.warning("%d bytes remaining", len(data)-pos)
 
         return info
-
-
-def main(argv=None):
-    if argv is None:
-        argv = sys.argv[1:]
-    logging.basicConfig(level=logging.DEBUG)
-    qrt = QuickRouteData(jpeg=argv[0])
-    print json.dumps(qrt, sort_keys=True, indent=2, cls=DateTimeEncoder)
-
-
-if __name__ == '__main__':
-    main()
